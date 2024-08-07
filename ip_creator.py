@@ -2,7 +2,6 @@ import os
 import sys
 import argparse
 import time
-from datetime import datetime
 import re
 import shutil
 import hashlib
@@ -50,12 +49,12 @@ def arg_parse():
                         default="", 
                         help="Enter the supplementary formats you would like to preserve")
     
-    parser.add_argument('-p',
+    parser.add_argument('-kfs',
                         choices=['y', 'n'],
                         required=True,
                         type=str,
                         default="", 
-                        help="Enter your choice on preserving directory structure for the objects in the destination")
+                        help="(KFS - Keep folder structure) : Enter your choice on preserving directory structure for the objects in the destination")
     
     parsed_args = parser.parse_args()
 
@@ -157,12 +156,11 @@ def objects_and_supplements_ip(args, log_name_source):
     return
 
 def uid_pattern_check(uid):
-    uid_pattern = re.compile(pattern=r"[a-z]{3,4}\d{3,4}")
+    uid_pattern = re.compile(pattern=r"[a-z]{4}\d{4}")
     m = uid_pattern.fullmatch(uid)
     while m is None: #or len(m.group()) != 7:
         print("\nEnter the uid which follows the below rules")
-        print("Name format - 3 or 4 lowercase alphabets followed by 3 or 4 digits (Examples : 'doaa4321', 'doa1234', 'doaa123', 'doa123')")
-        # print("Name Option 1 - 4 alphabets followed by 3 digits (Example : 'abcd123')")
+        print("Name format - 4 lowercase alphabets followed by 4 digits (Example : 'doaa4321')")
         uid = input("Please input an uid which follows the above rules: ")
         m = uid_pattern.fullmatch(uid)
 
@@ -185,10 +183,6 @@ def main():
     if args.uid == "":
         uid = input('Please enter the uid name to be created (Do not enter an empty string): ')
         uid = uid_pattern_check(uid)
-        # if uid == "":
-        #     print("Error - uid cannot be empty, Exiting ip_creator.py")
-        #     generate_log(log_name_source, "Error - uid cannot be empty, Exiting ip_creator.py")
-        #     sys.exit()
     else:
         uid = uid_pattern_check(args.uid)
     

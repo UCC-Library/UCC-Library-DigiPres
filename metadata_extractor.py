@@ -12,7 +12,6 @@ from pymediainfo import MediaInfo
 def format_details(format, file):
     df = pd.read_csv(file, header=0, index_col="format")
     try:
-        map_list = df.loc[format, "map_list"]
         mapped_formats = list(map(str.strip, df.loc[format, "map_list"].split(",")))
     except: 
         mapped_formats = ""
