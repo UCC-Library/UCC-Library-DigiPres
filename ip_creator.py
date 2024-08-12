@@ -188,6 +188,8 @@ def main():
     
     args.uid = uid
     output_path_ = args.o
+
+    os.makedirs(output_path_, exist_ok= True)
     output_path = os.path.join(output_path_, uid)
 
     if os.path.exists(output_path):
