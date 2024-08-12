@@ -76,9 +76,10 @@ main() {
             command="readlink"
             ;;
     esac
-    normpath=$("$command" "$source")
+    normpath=$($command "$source")
     local relative_path
     relative_path=$(basename "$normpath")
+    echo $relative_path
     local log_name_source_="${relative_path}_$(date +"%Y_%m_%dT%H_%M_%S")"
     local manifest
     local log_name_source
