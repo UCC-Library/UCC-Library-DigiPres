@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import argparse
@@ -53,7 +54,7 @@ def arg_parse():
                         choices=['y', 'n'],
                         required=True,
                         type=str,
-                        default="", 
+                        default='n', 
                         help="(KFS - Keep folder structure) : Enter your choice on preserving directory structure for the objects in the destination")
     
     parsed_args = parser.parse_args()
@@ -188,7 +189,6 @@ def main():
     
     args.uid = uid
     output_path_ = args.o
-
     os.makedirs(output_path_, exist_ok= True)
     output_path = os.path.join(output_path_, uid)
 

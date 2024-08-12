@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 import os
 import shutil
 import argparse
 import sys
 import time
 from logger import make_desktop_logs_dir, generate_log, remove_bad_files
+
 def arg_parse():
 
     '''
