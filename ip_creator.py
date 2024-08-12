@@ -105,7 +105,7 @@ def objects_and_supplements_ip(args, log_name_source):
                 hash_source = str(hashlib_md5(file_src))
 
                 
-                if args.p == 'n':
+                if args.kfs == 'n':
                     shutil.copy2(file_src, objects_folder)
 
                     new_file_name = os.path.basename(root) + "_" + file
