@@ -12,7 +12,8 @@ def arg_parse():
     '''
 
     parser = argparse.ArgumentParser(
-        description="Generates the synopsis of folder contents. Either one of formats and ref arguments is mandatory"
+        description="Removes files with specific formats of interest and also provides an option to remove empty directories. \
+            Additionally, it removes bad directories by default. Either one of formats and ref arguments is mandatory."
     )
 
     parser.add_argument('-i', 

@@ -114,7 +114,7 @@ def objects_and_supplements_ip(args, log_name_source):
                     os.rename(os.path.join(objects_folder, file), file_dest)
 
                 else:
-                    relative_path = os.path.relpath(root, input_path)
+                    relative_path = os.path.relpath(root, os.path.dirname(input_path))
                     dest_dir = os.path.join(objects_folder, relative_path)
                     
                     # Ensure the destination directory exists
@@ -141,7 +141,7 @@ def objects_and_supplements_ip(args, log_name_source):
                     f.write(hash_dest + "  " + str(rel_path))
                     f.write("\n")
             
-            elif file_format in supplement_formats:
+            elif supplement_formats!=[] and file_format in supplement_formats:
                 file_src = os.path.join(root, file)
 
                 shutil.copy2(file_src, supplement_folder)
@@ -249,8 +249,8 @@ def main():
 
     supplement_folder = os.path.join(output_path, "supplement")
     args.supplement_folder = supplement_folder
-    if supplement:
-        os.makedirs(supplement_folder, exist_ok=True)
+    
+    os.makedirs(supplement_folder, exist_ok=True)
     
     # Creating required objects structure of the information package creation
     objects_and_supplements_ip(args, log_name_source)
