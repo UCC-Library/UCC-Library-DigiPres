@@ -13,7 +13,8 @@ def arg_parse():
 
     parser = argparse.ArgumentParser(
         description="Removes files with specific formats of interest and also provides an option to remove empty directories. \
-            Additionally, it removes bad directories by default. Either one of formats and ref arguments is mandatory."
+            Additionally, it removes bad directories by default. Either one of formats and ref arguments is mandatory. \
+            Written by Abhijeet Rao, UCC 2023-2024."
     )
 
     parser.add_argument('-i', 

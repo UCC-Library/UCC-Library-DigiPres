@@ -19,8 +19,9 @@ def arg_parse():
     '''
 
     parser = argparse.ArgumentParser(
-        description="Generates the csv and txt metadata files for each file format in a directory that is \
-            requested in formats parameter during script call and stores txt metadata in exif_txt directory and"
+        description="this script is an information package creator. It packages all files belonging to a specific format of interest into a folder \
+            and creates manifests for the packaged file. Additonally, metadata is extracted and stored in csv and txt files for reference. Optionally, \
+            supplementary files could be stored as well. Written by, Abhijeet Rao, UCC 2023-2024"
     )
 
     parser.add_argument('-i', 

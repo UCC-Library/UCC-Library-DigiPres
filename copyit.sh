@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Written by [Your Name], UCC 2024
+# Written by Abhijeet Rao, UCC 2023-2024
 
 generate_log() {
     local log_file="$1"

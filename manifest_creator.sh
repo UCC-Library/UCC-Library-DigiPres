@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Written by Abhijeet Rao, UCC 2024
+# Written by Abhijeet Rao, UCC 2023-2024
 
 remove_bad_files() {
     local rm_list=(".DS_Store" "Thumbs.db" "desktop.ini")

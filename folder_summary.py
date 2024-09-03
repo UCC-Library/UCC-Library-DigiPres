@@ -13,7 +13,8 @@ def arg_parse():
     '''
 
     parser = argparse.ArgumentParser(
-        description="Generates the synopsis of folder contents"
+        description="Generates the synopsis of folder contents. \
+            Written by Abhijeet Rao, UCC 2023-2024."
     )
 
     parser.add_argument('-i', 

@@ -26,7 +26,8 @@ def arg_parse():
 
     parser = argparse.ArgumentParser(
         description="Generates the csv and txt metadata files for each file format in a directory that is \
-            requested in formats parameter during script call and stores txt metadata in exif_txt directory and"
+            requested in formats parameter during each script call. \
+            Written by Abhijeet Rao, UCC 2023-2024"
     )
 
     parser.add_argument('-i', 

@@ -118,3 +118,7 @@ B) Bash :
             bash manifest.sh "/home/user/directory1" -s
         
 
+Documented by :
+    Abhijeet Rao,
+    M.Sc. Data Science and Analytics,
+    UCC 2023-2024

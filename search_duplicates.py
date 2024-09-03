@@ -13,7 +13,9 @@ def arg_parse():
     '''
 
     parser = argparse.ArgumentParser(
-        description="Checks for duplicate files across multiple directory paths provided as input. It curates a list for every file with it's corresponding duplicate file paths.s"
+        description="Checks for duplicate files across multiple directory paths provided as input. \
+            It curates a list for every file with it's corresponding duplicate file paths. \
+            Written by ABhijeet Rao, UCC 2023-2024."
     )
 
     parser.add_argument('-i', 
