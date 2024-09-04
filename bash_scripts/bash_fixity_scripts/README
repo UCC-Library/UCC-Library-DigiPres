@@ -1,1 +1,14 @@
+These scripts are used to facilitate the creation of md5 checksum file manifests for the purpose of ensuring file fixity during transfer and movement.
+They are adapted from scripts created and developed IFIscripts. https://github.com/Irish-Film-Institute/IFIscripts
 
+Installation:
+
+Purpose:
+manifest_creator.sh
+
+copyit.sh
+
+Usage:
+manifest_creator.sh
+
+copyit.sh
