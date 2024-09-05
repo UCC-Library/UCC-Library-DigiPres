@@ -1,4 +1,5 @@
-# This repository contains python and shell scripts required for the purpose of digital preservation.
+# This repository contains python and shell scripts required for the purpose of digital preservation of unique and distinct collections in UCC Library.
+
 
 ## Pre-requisites
 
@@ -7,7 +8,7 @@
 3) Once python 3.x is installed, perform installation of pandas and pymediainfo packages.
    Command to install these packages - "pip3 install pandas pymediainfo"
 
-## Python :
+## Python Scripts:
 
 ### Points to Note : 
     
@@ -125,8 +126,8 @@ Summary :
 This script contains functions necessary to log all the above script runs.
 
 
-## Bash : 
-    
+## Bash Scripts: 
+### These scripts are created to be used by external donors or depositors who wish to      
 #### Points to note
     
 1) Open a bash command prompt before you attempt to execute any of the scripts.
@@ -142,7 +143,7 @@ cd "/home/user/ucc_library"
     
 #### Summary
     
-The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory of interest and store all the checksum results in a single file. An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which the script will work on. If sidecar isn't passed the logs and checksum file are stored in logs and manifest folder respectively.
+The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory and store all the checksum results in a single file. An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which the script will work on. If sidecar isn't passed the logs and checksum file are stored in logs and manifest folder respectively.
         
 #### Output
     
