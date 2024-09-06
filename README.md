@@ -1,13 +1,14 @@
-# This repository contains python and shell scripts required for the purpose of digital preservation.
+# This repository contains python and shell scripts required for the purpose of digital preservation of unique and distinct collections in UCC Library.
+
 
 ## Pre-requisites
 
-1) Ensure mediainfo and exiftool are installed in your system.
+1) Ensure mediainfo (https://mediaarea.net/en/MediaInfo) and exiftool (https://exiftool.org/) cli software are installed in your system.
 2) Ensure python 3.x is installed in your system.
 3) Once python 3.x is installed, perform installation of pandas and pymediainfo packages.
    Command to install these packages - "pip3 install pandas pymediainfo"
 
-## Python :
+## Python Scripts:
 
 ### Points to Note : 
     
@@ -46,7 +47,9 @@ python3 folder_summary.py -i "/home/user/directory1"
     
 #### Summary
     
-The purpose of this script is to extract the metadata of specfic file format/formats of interest using exiftool (for image formats) or mediainfo (for av formats) tool and store the metadata details for each file in a csv file and a txt file (for image formats) or a xml file (for av formats). The list of image or av formats supported by the script could be viewed in the "format" column of av_format_mapper.csv and image_format_mapper.csv files. To support additional formats please updated the csv files. The individual csv files are merged together to form a master csv file containing the metadata of all the files for each format of interest.
+The purpose of this script is to extract the technical metadata of selected file format/formats of interest within a given directory and storing the metadata details for each file in a csv file and a txt file (for image formats) or a xml file (for av formats). The individual csv files are merged together to form a master csv file containing the metadata of all the files for each format of interest.
+Exiftool (https://exiftool.org/) is used to extract metadata for image formats and Mediainfo (https://mediaarea.net/en/MediaInfo) is used to extract technical metadata for av formats.
+The list of image or av formats supported by the script can be viewed in the "format" column of av_format_mapper.csv and image_format_mapper.csv files. To support additional formats please update these format-mapper csv files.
 
 #### Output
     
@@ -123,8 +126,8 @@ Summary :
 This script contains functions necessary to log all the above script runs.
 
 
-## Bash : 
-    
+## Bash Scripts: 
+### These scripts are created to be used by external donors or depositors who wish to      
 #### Points to note
     
 1) Open a bash command prompt before you attempt to execute any of the scripts.
@@ -140,7 +143,7 @@ cd "/home/user/ucc_library"
     
 #### Summary
     
-The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory of interest and store all the checksum results in a single file. An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which the script will work on. If sidecar isn't passed the logs and checksum file are stored in logs and manifest folder respectively.
+The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory and store all the checksum results in a single file. An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which the script will work on. If sidecar isn't passed the logs and checksum file are stored in logs and manifest folder respectively.
         
 #### Output
     
