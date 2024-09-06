@@ -6,6 +6,7 @@ import time
 import re
 import shutil
 import hashlib
+import subprocess
 from logger import generate_log, make_desktop_logs_dir, remove_bad_files
 from metadata_extractor import format_details, image_exiftool, av_mediainfo
 
@@ -57,6 +58,13 @@ def arg_parse():
                         type=str,
                         default='n', 
                         help="(KFS - Keep folder structure) : Enter your choice on preserving directory structure for the objects in the destination")
+    
+    parser.add_argument('-jhove',
+                        choices=['y', 'n'],
+                        required=True,
+                        type=str,
+                        default='n', 
+                        help="Enter your choice on using 'jhove' utility IF available")
     
     parsed_args = parser.parse_args()
 
@@ -168,6 +176,22 @@ def uid_pattern_check(uid):
 
     return uid
 
+def jhove_audit(args, log_name_source):
+    
+    print(' - JHOVE available/enabled - Beginning auditing')
+    generate_log(log_name_source, ' - JHOVE available/enabled - Beginning auditing')
+
+    jhove_xml_file = os.path.join(args.metadata_folder, args.uid+"_jhove_audit.xml")
+    command = f"""\
+    {os.path.expanduser("~/")}jhove/jhove -h Audit -o "{jhove_xml_file}" "{args.objects_folder}"
+    """
+    print(command)
+    subprocess.run(command, shell=True, text=True)
+
+    print(' - JHOVE available/enabled - auditing process completed')
+    generate_log(log_name_source, ' - JHOVE available/enabled - auditing process completed')
+    return
+
 def main():
     args = arg_parse()
     input_path = args.i
@@ -259,6 +283,9 @@ def main():
     # Calling appropriate metadata extractor function
     metadata(args_object, log_name_source)
 
+    if args.jhove == 'y' and args.format in ['.tiff', '.jpeg', '.jpeg2000']:
+        jhove_audit(args, log_name_source)
+    
     if os.path.exists(supplement_folder):
         if len(os.listdir(supplement_folder)) == 0:
             os.removedirs(supplement_folder)

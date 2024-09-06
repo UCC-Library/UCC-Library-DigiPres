@@ -1,10 +1,16 @@
 #!/bin/bash -e
 # Written by Abhijeet Rao, UCC 2023-2024
 
+calculate_checksum() {
+    local file="$1"
+    # Extract only the checksum value (MD5)
+    md5 "$file" | awk -F " = " '{print $2}'
+}
+
 generate_log() {
     local log_file="$1"
     local message="$2"
-    echo "$(date +"%Y-%m-%dT%H:%M:%S ")$(whoami) ${message}" >> "$log_file"
+    echo "$(date +"%Y-%m-%dT%H:%M:%S") $(whoami) ${message}" >> "$log_file"
 }
 
 make_desktop_logs_dir() {
@@ -15,93 +21,119 @@ make_desktop_logs_dir() {
 
 make_desktop_manifest_dir() {
     local desktop_manifest_dir="$HOME/Desktop/ucc_moveit_manifests"
-    mkdir -p "$desktop_manifest_dir/old_manifests"
+    mkdir -p "$desktop_manifest_dir"
     echo "$desktop_manifest_dir"
 }
 
-# Function to compare two manifest files and handle mismatches
-compare_manifests() {
-    local src_manifest="$1"
-    local dest_manifest="$2"
-    local log_name="$3"
-    local destination="$4"
+copy_files_and_validate() {
+    local source_dir="$1"
+    local dest_dir="$2"
+    local source_manifest="$3"
+    local dest_manifest="$4"
+    local log_file="$5"
 
-    echo "Comparing manifests..."
-    generate_log "$log_name" "Comparing manifests"
-    
-    # Check if manifest files exist before comparing
-    if [ ! -f "$src_manifest" ]; then
-        echo "ERROR: Source manifest file does not exist: $src_manifest"
-        generate_log "$log_name" "ERROR: Source manifest file does not exist: $src_manifest"
-        exit 1
-    fi
+    find "$source_dir" -type f | while read -r src_file; do
+        # Calculate source file checksum (just the checksum value)
+        local src_checksum
+        src_checksum=$(calculate_checksum "$src_file")
 
-    if [ ! -f "$dest_manifest" ]; then
-        echo "ERROR: Destination manifest file does not exist: $dest_manifest"
-        generate_log "$log_name" "ERROR: Destination manifest file does not exist: $dest_manifest"
-        exit 1
-    fi
+        # Store relative path for manifest
+        local relative_path
+        local updated_source_dir
+        updated_source_dir=$(dirname "$source_dir")
+        relative_path=$(realpath --relative-to="$updated_source_dir" "$src_file")
 
-    if diff_output=$(diff "$src_manifest" "$dest_manifest"); then
-        echo "Manifests match. Copy successful."
-        generate_log "$log_name" "Manifests match. Copy successful."
-    else
-        echo "ERROR: Manifests do not match. Differences found:"
-        echo "$diff_output"
-        generate_log "$log_name" "ERROR: Manifests do not match. Differences found:\n$diff_output"
+        # Add checksum to source manifest
+        echo "$src_checksum $relative_path" >> "$source_manifest"
 
-        # Erase the destination directory since the manifest did not match
-        echo "Removing destination directory $destination..."
-        rm -rf "$destination"
-        generate_log "$log_name" "Destination directory $destination removed due to manifest mismatch."
+        # Determine destination file path
+        local dest_file="$dest_dir/$relative_path"
 
-        # Exit with an error
-        exit 1
-    fi
+        # Ensure destination directory exists
+        mkdir -p "$(dirname "$dest_file")"
+
+        # Copy file to destination
+        echo "Copying $src_file to $dest_file"
+        cp "$src_file" "$dest_file"
+
+        # Calculate destination file checksum (just the checksum value)
+        local dest_checksum
+        dest_checksum=$(calculate_checksum "$dest_file")
+
+        # Add checksum to destination manifest
+        echo "$dest_checksum $relative_path" >> "$dest_manifest"
+
+        # Compare checksums (checksum values only)
+        if [[ "$src_checksum" != "$dest_checksum" ]]; then
+            echo "Checksum mismatch for $src_file and $dest_file"
+            generate_log "$log_file" "Checksum mismatch for $src_file and $dest_file"
+        else
+            echo "Checksum matched for $src_file"
+            generate_log "$log_file" "Checksum matched for $src_file"
+        fi
+    done
 }
 
-# Main function
 main() {
+
     local source="$1"
-    local destination="$2"
+    local dest="$2"
 
-    if [ -z "$source" ] || [ -z "$destination" ]; then
-        echo "Usage: $0 <source_directory> <destination_directory>"
+    if [[ ! -d "$source" ]]; then
+        echo "$source is either not a directory or does not exist"
         exit 1
     fi
 
-    mkdir -p "$destination"
-
-    local desktop_logs_dir=$(make_desktop_logs_dir)
-    local desktop_manifest_dir=$(make_desktop_manifest_dir)
-    local log_name="${desktop_logs_dir}/copyit_$(date +"%Y_%m_%dT%H_%M_%S").log"
-    local source_manifest="${desktop_manifest_dir}/$(basename "$source")_manifest.md5"
-    local dest_manifest="${destination}/$(basename "$destination")_manifest.md5"
-
-    # Create manifest for the source directory
-    manifest_creator.sh "$source"
-
-    # Copy the directory or object to the destination
-    echo "Copying from $source to $destination..."
-    generate_log "$log_name" "Copying from $source to $destination"
-    
-    if ! cp -r "$source" "$destination"; then
-        echo "ERROR: Copy failed."
-        generate_log "$log_name" "ERROR: Copy failed."
-        exit 1
+    if [[ ! -d "$dest" ]]; then
+        echo "$dest is either not a directory or does not exist, creating it --"
+        mkdir -p "$dest"
     fi
+    local source="$1"
+    local source_parent_dir
+    source_parent_dir=$(dirname "$source")
+    local normpath
+    local command
+    case "$(uname)" in
+        "Darwin")
+            brew install coreutils
+            command="greadlink -f"
+            ;;
+        "Linux"|"CYGWIN"|"MINGW"|"MSYS")
+            command="readlink"
+            ;;
+    esac
+    normpath=$($command "$source")
+    local relative_path
+    relative_path=$(basename "$normpath")
+    echo $relative_path
+    local log_name_source_="${relative_path}_$(date +"%Y_%m_%dT%H_%M_%S")"
+    local desktop_logs_dir
+    desktop_logs_dir=$(make_desktop_logs_dir)
+    local log_file="${desktop_logs_dir}/${log_name_source_}.log"
 
-    echo "problem spot"
+    # Source manifest (always stored in the ucc_moveit_manifests directory)
+    local manifest_="${relative_path}_manifest.md5"
+    local desktop_manifest_dir
+    desktop_manifest_dir=$(make_desktop_manifest_dir)
+    local source_manifest="${desktop_manifest_dir}/${manifest_}"
+    echo $source_manifest
 
-    # Create manifest for the destination directory
-    execute=$(manifest_creator.sh "$destination" -s)
-    mv "${desktop_manifest_dir}/$(basename "$destination")_manifest.md5" "${destination}/$(basename "$destination")_manifest.md5"
+    # Destination manifest (either stored in ucc_moveit_manifests or as a sidecar)
+    local dest_manifest
+    local base_dest
+    base_dest=$(dirname "$dest")
+    dest_manifest="$dest/${manifest_}"
+    echo $dest_manifest
 
-    # Compare the manifests and handle errors if they don't match
-    compare_manifests "$source_manifest" "$dest_manifest" "$log_name" "$destination"
+    # Log the start of the process
+    generate_log "$log_file" "copyit.sh started"
+    generate_log "$log_file" "Source: $source"
+    generate_log "$log_file" "Destination: $dest"
 
-    echo "Copy and verification completed successfully."
-    generate_log "$log_name" "Copy and verification completed successfully."
+    # Copy files and validate checksums
+    copy_files_and_validate "$source" "$dest" "$source_manifest" "$dest_manifest" "$log_file"
+
+    generate_log "$log_file" "File copy and checksum validation completed successfully"
 }
 
 main "$@"

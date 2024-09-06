@@ -1,6 +1,6 @@
 format,map_list
-.jpg,".jpg, .jpeg"
-.tif,".tif, .tiff"
+.jpeg,".jpg, .jpeg"
+.tiff,".tif, .tiff"
 .psd,.psd
 .dng,.dng
 .iiq,.iiq
