@@ -31,8 +31,13 @@ copy_files_and_validate() {
     local source_manifest="$3"
     local dest_manifest="$4"
     local log_file="$5"
+    local failed_files=()
+    local total_files=0
+    local failed_count=0
 
     find "$source_dir" -type f | while read -r src_file; do
+        total_files=$((total_files + 1))
+
         # Calculate source file checksum (just the checksum value)
         local src_checksum
         src_checksum=$(calculate_checksum "$src_file")
@@ -67,11 +72,39 @@ copy_files_and_validate() {
         if [[ "$src_checksum" != "$dest_checksum" ]]; then
             echo "Checksum mismatch for $src_file and $dest_file"
             generate_log "$log_file" "Checksum mismatch for $src_file and $dest_file"
+            failed_files+=("$relative_path")
+            failed_count=$((failed_count + 1))
         else
             echo "Checksum matched for $src_file"
             generate_log "$log_file" "Checksum matched for $src_file"
         fi
     done
+
+    # Return failed files and count
+    echo "${failed_files[@]}"
+    return $failed_count
+}
+
+report_summary() {
+    local total_files="$1"
+    local failed_files=("$@")
+    local failed_count="${failed_files[0]}"
+    shift 1
+    local failed_list=("$@")
+
+    if [[ "$failed_count" -eq 0 ]]; then
+        echo "SUCCESS. All checksums match. All of your files have copied successfully to your destination directory with integrity."
+        echo "The checksum file manifest is stored next to your destination directory and a copy has been kept in the 'ucc_moveit_manifests' folder on your desktop for your future reference."
+    else
+        echo "FAIL. Not all checksums match. Some of your files have failed to copy to your destination with integrity."
+        echo "The following files have mismatched checksums:"
+        
+        for failed_file in "${failed_list[@]}"; do
+            echo "$failed_file"
+        done
+
+        echo "We recommend that you attempt to copy the files again."
+    fi
 }
 
 main() {
@@ -88,7 +121,7 @@ main() {
         echo "$dest is either not a directory or does not exist, creating it --"
         mkdir -p "$dest"
     fi
-    local source="$1"
+
     local source_parent_dir
     source_parent_dir=$(dirname "$source")
     local normpath
@@ -105,7 +138,7 @@ main() {
     normpath=$($command "$source")
     local relative_path
     relative_path=$(basename "$normpath")
-    echo $relative_path
+
     local log_name_source_="${relative_path}_$(date +"%Y_%m_%dT%H_%M_%S")"
     local desktop_logs_dir
     desktop_logs_dir=$(make_desktop_logs_dir)
@@ -120,8 +153,6 @@ main() {
 
     # Destination manifest (either stored in ucc_moveit_manifests or as a sidecar)
     local dest_manifest
-    local base_dest
-    base_dest=$(dirname "$dest")
     dest_manifest="$dest/${manifest_}"
     echo $dest_manifest
 
@@ -131,7 +162,11 @@ main() {
     generate_log "$log_file" "Destination: $dest"
 
     # Copy files and validate checksums
-    copy_files_and_validate "$source" "$dest" "$source_manifest" "$dest_manifest" "$log_file"
+    failed_files=$(copy_files_and_validate "$source" "$dest" "$source_manifest" "$dest_manifest" "$log_file")
+    failed_count=$?
+
+    # Report summary
+    report_summary "$failed_count" "${failed_files[@]}"
 
     generate_log "$log_file" "File copy and checksum validation completed successfully"
 }

@@ -61,10 +61,15 @@ def arg_parse():
     
     parser.add_argument('-jhove',
                         choices=['y', 'n'],
-                        required=True,
                         type=str,
-                        default='n', 
+                        default='', 
                         help="Enter your choice on using 'jhove' utility IF available")
+
+    parser.add_argument('-brunnhilde',
+                        choices=['y', 'n'],
+                        type=str,
+                        default='', 
+                        help="Enter your choice on using 'brunnhilde-ClamAV' utility IF available")
     
     parsed_args = parser.parse_args()
 
@@ -192,6 +197,31 @@ def jhove_audit(args, log_name_source):
     generate_log(log_name_source, ' - JHOVE available/enabled - auditing process completed')
     return
 
+def brunnhilde_scan(args, log_name_source):
+
+    print(' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
+    generate_log(log_name_source, ' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
+
+    brunnhilde_output_folder = os.path.join(args.metadata_folder, args.uid+"_brunnhilde")
+    command = f"""\
+    brunnhilde.py "{args.objects_folder}" "{brunnhilde_output_folder}"
+    """
+    print(command)
+    subprocess.run(command, shell=True, text=True)
+
+
+    os.rename(os.path.join(brunnhilde_output_folder, "report.html"), \
+              os.path.join(brunnhilde_output_folder, args.uid+"_report.html"))
+    
+    os.rename(os.path.join(brunnhilde_output_folder, "siegfried.csv"), \
+              os.path.join(brunnhilde_output_folder, args.uid+"_siegfried.csv"))
+    
+    os.rename(os.path.join(os.path.join(brunnhilde_output_folder, "logs"), "viruscheck-log.txt"), \
+              os.path.join(os.path.join(brunnhilde_output_folder, "logs"), args.uid+"_viruscheck-log.txt"))
+    
+    print(' - brunnhilde-ClamAV available/enabled - scanning process completed')
+    generate_log(log_name_source, ' - brunnhilde-ClamAV available/enabled - scanning process completed')
+
 def main():
     args = arg_parse()
     input_path = args.i
@@ -240,6 +270,28 @@ def main():
         supplement = args.supplement
         generate_log(log_name_source, f"Supplementary formats to be preserved - {supplement}")
 
+    if args.jhove == "":
+        q = input("Would you like to generate a jhove audit report? (Ensure jhove installed in this system. \
+                  Provide y/n as your input)")
+        if q.lower() == 'y':
+            args.jhove = 'y'
+            generate_log(log_name_source, f"Enabling jhove audit report")
+        else:
+            args.jhove = 'n'
+            generate_log(log_name_source, "Ignoring jhove auditing")
+
+    if args.brunnhilde == "":
+        q = input("Would you like to generate a siegfried-brunnhilde virus report? (Ensure \
+                  brunnhilde/clamAV installed in this system. Recommended OS for using this feature is MacOS.\
+                  Provide y/n as your input) ")
+        if q.lower() == 'y':
+            args.brunnhilde = 'y'
+            generate_log(log_name_source, f"Enabling jhove audit report")
+        else:
+            args.brunnhilde = 'n'
+            generate_log(log_name_source, "Ignoring jhove auditing")
+    
+
     args_object = Arguments()
 
     format = args.format
@@ -285,6 +337,9 @@ def main():
 
     if args.jhove == 'y' and args.format in ['.tiff', '.jpeg', '.jpeg2000']:
         jhove_audit(args, log_name_source)
+    
+    if args.brunnhilde == 'y':
+        brunnhilde_scan(args, log_name_source)
     
     if os.path.exists(supplement_folder):
         if len(os.listdir(supplement_folder)) == 0:
