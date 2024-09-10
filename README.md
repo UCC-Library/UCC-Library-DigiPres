@@ -127,7 +127,8 @@ This script contains functions necessary to log all the above script runs.
 
 
 ## Bash Scripts: 
-### These scripts are created to be used by external donors or depositors who wish to      
+### These scripts are designed to be used by external donors or depositors who wish to deliver digital objects to UCC-Library Digital Archive.
+
 #### Points to note
     
 1) Open a bash command prompt before you attempt to execute any of the scripts.
@@ -160,6 +161,13 @@ The purpose of this bash script is to generate the md5 checksum manifest file fo
 bash manifest.sh "/home/user/directory1"
 bash manifest.sh "/home/user/directory1" -s
 ```
+####
+manifest.sh and copyfixity.sh are based on two python fixity scripts developed by IFIscripts. 
+manifest.py: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/manifest.py and 
+copyit.py: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/copyit.py 
+
+The file manifest created as a sidecar to the digital objects is structured in a way that fixity can 
+be validated using the IFIscripts python script validate.py https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/validate.py 
 
 ## Documented by :
 ```bash
