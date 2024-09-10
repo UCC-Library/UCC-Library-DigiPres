@@ -75,7 +75,7 @@ def arg_parse():
 
     return parsed_args
 
-# Function taken from ififuncs.py from IFI Scripts repository
+# Function taken from ififuncs.py from IFIscripts repository: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/ififuncs.py
 def hashlib_md5(filename):
     '''
     uses hashlib to return an MD5 checksum of an input filename
