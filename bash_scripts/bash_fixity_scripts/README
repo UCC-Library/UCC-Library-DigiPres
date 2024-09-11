@@ -1,14 +1,46 @@
-These scripts are used to facilitate the creation of md5 checksum file manifests for the purpose of ensuring file fixity during transfer and movement.
-They are adapted from scripts created and developed IFIscripts. https://github.com/Irish-Film-Institute/IFIscripts
 
-Installation:
 
-Purpose:
-manifest_creator.sh
+These scripts are used to facilitate the creation of md5 checksum file manifests for the purpose of ensuring file fixity 
+during transfer and movement. They are adapted from scripts created and developed IFIscripts. https://github.com/Irish-Film-Institute/IFIscripts
 
-copyit.sh
+###Points to note
+1. For use with MacOS only. They are not suitable for Windows or Linux operating systems.
+2. For use with a shell command prompt. To execute, open the Terminal command prompt on your Mac computer.
+3. Logs and Manifests for each script executed are stored in Desktop in a folder called "ucclib_logs" and "ucclib_manifests" with the name of 
+the log file indicating the script executed along with a timestamp of execution and name of the manifest file indicating the folder the script worked on.
 
-Usage:
-manifest_creator.sh
 
-copyit.sh
+###Installation:
+Download bash_fixity_scripts folder to your desktop.
+Open the Terminal command prompt on your Mac computer. 
+Change the directory (cd) of the of the Terminal command from the home directory to the newly dowbloaded directory where your scripts are stored using the "cd" command
+
+Example-
+cd "/home/user/desktop/cash_fixity_scripts_ucc"
+
+###Scripts
+
+## A) manifest_creator.sh
+#Summary: 
+The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory and store all the checksum results in a single file. 
+An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which 
+the script will work on. If sidecar isn't passed the logs and checksum file are stored in "ucclib_logs" and "ucclib_manifests" folders respectively.
+
+#Usage:
+Commands to execute this script in Terminal command prompt:
+bash manifest.sh "/home/user/directory1"
+bash manifest.sh "/home/user/directory1" -s
+
+Arguments accespeted by this script:
+1. -h : prints usage and arguments for this script
+2. -s : sidecar argument to store logs and checksum beside the directory the script operates on. (Optional)
+
+Output:
+"_manifest.md5" file
+located in the 'ucclib_manifests' folder and (optional) as a sidecar to the input directory.
+
+## B) copyfixity.sh
+#Summary: 
+
+
+
