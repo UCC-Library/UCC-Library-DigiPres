@@ -157,7 +157,7 @@ main() {
     echo $dest_manifest
 
     # Log the start of the process
-    generate_log "$log_file" "copyit.sh started"
+    generate_log "$log_file" "copyfixity.sh started"
     generate_log "$log_file" "Source: $source"
     generate_log "$log_file" "Destination: $dest"
 
