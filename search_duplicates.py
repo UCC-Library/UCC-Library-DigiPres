@@ -6,6 +6,7 @@ import sys
 import filecmp
 from logger import make_desktop_logs_dir, generate_log, remove_bad_files
 
+# Below function parses input arguments from the command line provided by the user.
 def arg_parse():
 
     '''
@@ -27,7 +28,7 @@ def arg_parse():
     parsed_args = parser.parse_args()
     return parsed_args
 
-
+# Below function lists out all duplicates pairs of files across folders.
 def main():
 
     args = arg_parse()
@@ -87,5 +88,6 @@ def main():
                     generate_log(log_name_source, f"Duplicates for {fpath1} : {duplicates}")
                     del duplicates
 
+# Below code marks the start of execution of the program.
 if __name__ == "__main__":
     main()

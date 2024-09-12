@@ -10,9 +10,11 @@ import subprocess
 from logger import generate_log, make_desktop_logs_dir, remove_bad_files
 from metadata_extractor import format_details, image_exiftool, av_mediainfo
 
+# Empty class to create custom objects. Useful to modify argument lists.
 class Arguments():
     pass
 
+# Below function parses input arguments from the command line provided by the user.
 def arg_parse():
 
     '''
@@ -75,6 +77,7 @@ def arg_parse():
 
     return parsed_args
 
+# Logic used to determine the manifest checksum for a single file.
 # Function taken from ififuncs.py from IFIscripts repository: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/ififuncs.py
 def hashlib_md5(filename):
     '''
@@ -99,6 +102,9 @@ def hashlib_md5(filename):
     md5_output = m.hexdigest()
     return md5_output
 
+# Below function is used to copy files of interest into the "objects"
+# folder while storing supplement files if required, in the "supplement"
+# folder.
 def objects_and_supplements_ip(args, log_name_source):
     
     input_path = args.i
@@ -170,17 +176,21 @@ def objects_and_supplements_ip(args, log_name_source):
     generate_log(log_name_source, f"Finished processing object and supplementary files for {args.format} files")
     return
 
+# Below function checks if the user entered "uid" names adheres to 
+# a specfic condition.
 def uid_pattern_check(uid):
     uid_pattern = re.compile(pattern=r"[a-z]{4}\d{4}")
     m = uid_pattern.fullmatch(uid)
     while m is None: #or len(m.group()) != 7:
-        print("\nEnter the uid which follows the below rules")
+        print("\nWrong format followed - Enter the uid which follows the below rule")
         print("Name format - 4 lowercase alphabets followed by 4 digits (Example : 'doaa4321')")
-        uid = input("Please input an uid which follows the above rules: ")
+        uid = input("Please input an uid which follows the above rule: ")
         m = uid_pattern.fullmatch(uid)
 
     return uid
 
+# Below function triggers jhove auditing process for all the files stored
+# in the "objects" folder and stores the results in the "metadata" folder.
 def jhove_audit(args, log_name_source):
     
     print(' - JHOVE available/enabled - Beginning auditing')
@@ -197,6 +207,8 @@ def jhove_audit(args, log_name_source):
     generate_log(log_name_source, ' - JHOVE available/enabled - auditing process completed')
     return
 
+# Below function performs the brunnhilde/ClamAv virus scanning of the "objects" folder
+# content and stores the results in the "metadata" folder.
 def brunnhilde_scan(args, log_name_source):
 
     print(' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
@@ -222,6 +234,9 @@ def brunnhilde_scan(args, log_name_source):
     print(' - brunnhilde-ClamAV available/enabled - scanning process completed')
     generate_log(log_name_source, ' - brunnhilde-ClamAV available/enabled - scanning process completed')
 
+# Below function is the main logic to setup all the required folders for 
+# "information package" creation. It also ensures all required arguments
+# are entered properly by the user.
 def main():
     args = arg_parse()
     input_path = args.i
@@ -347,5 +362,6 @@ def main():
     
     return
 
+# Below code marks the start of execution of the program.
 if __name__ == "__main__":
     main()

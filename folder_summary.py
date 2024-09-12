@@ -6,6 +6,8 @@ import sys
 import time
 from logger import make_desktop_logs_dir, generate_log, remove_bad_files
 
+# Function takes in input arguments entered by the user while attempting to 
+# run this script.
 def arg_parse():
 
     '''
@@ -30,6 +32,7 @@ def arg_parse():
     parsed_args = parser.parse_args()
     return parsed_args
 
+# Main function logic to print the summary of the folder contents
 def main():
     
     args = arg_parse()
@@ -98,5 +101,6 @@ def main():
             + (str((file_sizes[file_type + '_size'])/ (1024*1024)) + " MB").center(33)
             + "\n")
 
+# Below code marks the start of execution of the program.
 if __name__ == "__main__":
     main()

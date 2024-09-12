@@ -1,6 +1,7 @@
 #!/bin/bash -e
 # Written by Abhijeet Rao, UCC 2023-2024
 
+# Below function removes files that aren't required.
 remove_bad_files() {
     local rm_list=(".DS_Store" "Thumbs.db" "desktop.ini")
     local root_dir="$1"
@@ -17,24 +18,28 @@ remove_bad_files() {
     done
 }
 
+# Below function is used to log script execution steps in a separate file for reference.
 generate_log() {
     local log_file="$1"
     local message="$2"
     echo "$(date +"%Y-%m-%dT%H:%M:%S ")$(whoami) ${message}" >> "$log_file"
 }
 
+# Below function creates the log folder required to store script execution logs.
 make_desktop_logs_dir() {
     local desktop_logs_dir="$HOME/Desktop/ucclib_logs"
     mkdir -p "$desktop_logs_dir"
     echo "$desktop_logs_dir"
 }
 
+# Below function creates the log folder required to store manifest details of a folder of interest.
 make_desktop_manifest_dir() {
     local desktop_manifest_dir="$HOME/Desktop/ucclib_manifests"
     mkdir -p "$desktop_manifest_dir/old_manifests"
     echo "$desktop_manifest_dir"
 }
 
+# Below function counts the number of files processed and registered in the manifest checksum file.
 manifest_file_count() {
     local manifest2check="$1"
     local count_in_manifest=0
@@ -46,6 +51,7 @@ manifest_file_count() {
     echo $count_in_manifest
 }
 
+# Below code controls the flow of execution of the entire script.
 main() {
     sidecar=false
 

@@ -1,30 +1,36 @@
 #!/bin/bash -e
 # Written by Abhijeet Rao, UCC 2023-2024
 
+# Below function calculates the md5 manifest checksum of a file.
 calculate_checksum() {
     local file="$1"
     # Extract only the checksum value (MD5)
     md5 "$file" | awk -F " = " '{print $2}'
 }
 
+# Below function is used to log script execution steps in a separate file for reference.
 generate_log() {
     local log_file="$1"
     local message="$2"
     echo "$(date +"%Y-%m-%dT%H:%M:%S") $(whoami) ${message}" >> "$log_file"
 }
 
+# Below function creates the log folder required to store script execution logs.
 make_desktop_logs_dir() {
     local desktop_logs_dir="$HOME/Desktop/ucclib_logs"
     mkdir -p "$desktop_logs_dir"
     echo "$desktop_logs_dir"
 }
 
+# Below function creates the log folder required to store manifest details of a folder of interest.
 make_desktop_manifest_dir() {
     local desktop_manifest_dir="$HOME/Desktop/ucclib_manifests"
     mkdir -p "$desktop_manifest_dir"
     echo "$desktop_manifest_dir"
 }
 
+# Below function copies each file from source to destination and verifies the manifest details.
+# Files that weren't copied properly are registered in the logs for the user to take action.
 copy_files_and_validate() {
     local source_dir="$1"
     local dest_dir="$2"
@@ -85,6 +91,8 @@ copy_files_and_validate() {
     return $failed_count
 }
 
+# Below function summarises the script execution indicating success if all files were copied properly to the destination
+# and indicates fail if not. Failed files are printed for user's reference.
 report_summary() {
     local total_files="$1"
     local failed_files=("$@")
@@ -107,6 +115,7 @@ report_summary() {
     fi
 }
 
+# Below code controls the flow of execution of the entire script.
 main() {
 
     local source="$1"

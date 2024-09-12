@@ -9,6 +9,8 @@ from logger import make_desktop_logs_dir, generate_log, remove_bad_files
 import csv
 from pymediainfo import MediaInfo
 
+# Below function provides the list of file formats
+# mapped to the file of interest
 def format_details(format, file):
     df = pd.read_csv(file, header=0, index_col="format")
     try:
@@ -18,6 +20,7 @@ def format_details(format, file):
 
     return mapped_formats
 
+# Below function parses input arguments from the command line provided by the user.
 def arg_parse():
 
     '''
@@ -44,11 +47,24 @@ def arg_parse():
                         type=str,
                         default="", 
                         help="Enter the audio/video (av) formats you would like to inspect")
+    
+    parser.add_argument('-jhove',
+                        choices=['y', 'n'],
+                        type=str,
+                        default='', 
+                        help="Enter your choice on using 'jhove' utility IF available")
+
+    parser.add_argument('-brunnhilde',
+                        choices=['y', 'n'],
+                        type=str,
+                        default='', 
+                        help="Enter your choice on using 'brunnhilde-ClamAV' utility IF available")
 
     parsed_args = parser.parse_args()
 
     return parsed_args
 
+# Below function converts media information of a file to CSV format.
 def mediainfo_to_csv(file_path, csv_path):
     media_info = MediaInfo.parse(file_path)
     data = []
@@ -76,6 +92,7 @@ def mediainfo_to_csv(file_path, csv_path):
         writer.writeheader()
         writer.writerows(data)
 
+# Below function processes image files using exiftool and generates technical metadata files.
 def image_exiftool(args, log_name_source):
 
     input_path = args.i
@@ -158,6 +175,7 @@ def image_exiftool(args, log_name_source):
     generate_log(log_name_source, " Exiting exiftool processing of target image formats")
     return
 
+# Below function processes audio/video files using mediainfo and generates technical metadata files.
 def av_mediainfo(args, log_name_source):
 
     input_path = args.i
@@ -239,6 +257,56 @@ def av_mediainfo(args, log_name_source):
     generate_log(log_name_source, " Exiting Mediainfo processing of target audio/video formats")
     return
 
+# Below function triggers jhove auditing process for all the files stored
+# in the "objects" folder and stores the results in the "metadata" folder.
+def jhove_audit(args, log_name_source):
+    
+    input_path = args.i
+
+    print(' - JHOVE available/enabled - Beginning auditing')
+    generate_log(log_name_source, ' - JHOVE available/enabled - Beginning auditing')
+
+    jhove_xml_file = input_path + "_jhove_audit.xml"
+    command = f"""\
+    {os.path.expanduser("~/")}jhove/jhove -h Audit -o "{jhove_xml_file}" "{input_path}"
+    """
+    subprocess.run(command, shell=True, text=True)
+
+    print(' - JHOVE available/enabled - auditing process completed')
+    generate_log(log_name_source, ' - JHOVE available/enabled - auditing process completed')
+    return
+
+# Below function performs the brunnhilde/ClamAv virus scanning of the "objects" folder
+# content and stores the results in the "metadata" folder.
+def brunnhilde_scan(args, log_name_source):
+
+    input_path = args.i
+    base_folder = os.path.basename(input_path)
+
+    print(' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
+    generate_log(log_name_source, ' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
+
+    brunnhilde_output_folder = input_path + "_brunnhilde"
+    command = f"""\
+    brunnhilde.py "{input_path}" "{brunnhilde_output_folder}"
+    """
+    print(command)
+    subprocess.run(command, shell=True, text=True)
+
+
+    os.rename(os.path.join(brunnhilde_output_folder, "report.html"), \
+              os.path.join(brunnhilde_output_folder, base_folder+"_report.html"))
+    
+    os.rename(os.path.join(brunnhilde_output_folder, "siegfried.csv"), \
+              os.path.join(brunnhilde_output_folder, base_folder+"_siegfried.csv"))
+    
+    os.rename(os.path.join(os.path.join(brunnhilde_output_folder, "logs"), "viruscheck-log.txt"), \
+              os.path.join(os.path.join(brunnhilde_output_folder, "logs"), base_folder+"_viruscheck-log.txt"))
+    
+    print(' - brunnhilde-ClamAV available/enabled - scanning process completed')
+    generate_log(log_name_source, ' - brunnhilde-ClamAV available/enabled - scanning process completed')
+
+# Main function that controls the flow of the script.
 def main():
     args = arg_parse()
     input_path = args.i
@@ -257,13 +325,43 @@ def main():
             generate_log(log_name_source, ' - At least once format must be provided as input')
             sys.exit()    
     
+    if args.jhove == "":
+        q = input("Would you like to generate a jhove audit report? (Ensure jhove installed in this system. \
+                  Provide y/n as your input)")
+        if q.lower() == 'y':
+            args.jhove = 'y'
+            generate_log(log_name_source, f"Enabling jhove audit report")
+        else:
+            args.jhove = 'n'
+            generate_log(log_name_source, "Ignoring jhove auditing")
+
+    if args.brunnhilde == "":
+        q = input("Would you like to generate a siegfried-brunnhilde virus report? (Ensure \
+                  brunnhilde/clamAV installed in this system. Recommended OS for using this feature is MacOS.\
+                  Provide y/n as your input) ")
+        if q.lower() == 'y':
+            args.brunnhilde = 'y'
+            generate_log(log_name_source, f"Enabling jhove audit report")
+        else:
+            args.brunnhilde = 'n'
+            generate_log(log_name_source, "Ignoring jhove auditing")
+
     if args.img:
         image_exiftool(args, log_name_source)
     
     if args.av:
         av_mediainfo(args, log_name_source)
 
-    return
-
+    if args.jhove == 'y' and args.img:
+        img_formats_list = list(args.img.split(" "))
+        for f in img_formats_list:
+            if f in ['.jpeg','.tiff','.jpeg2000']:
+                jhove_audit(args, log_name_source)
+                break
+    
+    if args.brunnhilde == 'y':
+        brunnhilde_scan(args, log_name_source)
+    
+# Below code marks the start of execution of the program.
 if __name__ == "__main__":
     main()

@@ -5,6 +5,7 @@ import time
 import sys
 from logger import make_desktop_logs_dir, generate_log, remove_bad_files
 
+# Below function parses input arguments from the command line provided by the user.
 def arg_parse():
 
     '''
@@ -36,6 +37,8 @@ def arg_parse():
     parsed_args = parser.parse_args()
     return parsed_args
 
+# Below main function provides the logic on removing files belonging to a specific format
+# and removes empty directories if necessary.
 def main():
 
     args = arg_parse()
@@ -78,6 +81,7 @@ def main():
         generate_log(log_name_source, ' - Either "formats" or "refs" argument is mandatory! - exiting remove.py!')
         sys.exit()
 
+# Below code marks the start of execution of the program.
 if __name__ == "__main__":
     main()
                 
