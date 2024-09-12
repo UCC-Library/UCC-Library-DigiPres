@@ -24,13 +24,13 @@ generate_log() {
 }
 
 make_desktop_logs_dir() {
-    local desktop_logs_dir="$HOME/Desktop/ucclibrary_logs"
+    local desktop_logs_dir="$HOME/Desktop/ucclib_logs"
     mkdir -p "$desktop_logs_dir"
     echo "$desktop_logs_dir"
 }
 
 make_desktop_manifest_dir() {
-    local desktop_manifest_dir="$HOME/Desktop/ucc_moveit_manifests"
+    local desktop_manifest_dir="$HOME/Desktop/ucclib_manifests"
     mkdir -p "$desktop_manifest_dir/old_manifests"
     echo "$desktop_manifest_dir"
 }
