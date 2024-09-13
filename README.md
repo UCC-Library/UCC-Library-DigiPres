@@ -196,13 +196,13 @@ bash copyfixity.sh "/home/user/<source-directory>" "/home/user/<destination-dire
 #### Output:
 Folder completely copied to destination with fixity manifest file which has checksum details of all the files copied to destination.
 
-####
+## Acknowledgements
 manifest.sh and copyfixity.sh are based on two python fixity scripts developed by IFIscripts. 
-manifest.py: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/manifest.py and 
-copyit.py: https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/copyit.py 
+1. [manifest.py](https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/manifest.py)
+2. [copyit.py](https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/copyit.py).
 
 The file manifest created as a sidecar to the digital objects is structured in a way that fixity can 
-be validated using the IFIscripts python script validate.py https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/validate.py 
+be validated using the IFIscripts python script [validate.py](https://github.com/Irish-Film-Institute/IFIscripts/blob/master/scripts/validate.py).
 
 ## Documented by :
 ```bash
