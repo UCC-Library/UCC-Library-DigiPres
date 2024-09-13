@@ -4,14 +4,14 @@
 ## Pre-requisites
 
 1) Ensure [mediainfo](https://mediaarea.net/en/MediaInfo) and [exiftool](https://exiftool.org/) cli software are installed in your system.
-2) Ensure (python 3.x)[https://www.python.org/downloads/] is installed in your system.
+2) Ensure [python 3.x](https://www.python.org/downloads/) is installed in your system.
 3) Once python 3.x is installed, perform installation of pandas and pymediainfo packages.
 Command to install these packages - 
 ```bash
 pip3 install pandas pymediainfo
 ```
-4) To utilise jhove utility, ensure java is installed in your system and then perform the required steps available at [jhove]().
-5) To utilise the brunnhilde/ClamAV utility, perform installation of the [siegfried](https://github.com/richardlehane/siegfried?tab=readme-ov-file) module first and then perform the required procedure explained at [brunnhilde](https://www.dpconline.org/blog/blog-niamh-murphy-brunnhilde-installation). Note that the brunnhilde utility is tried and tested in MacOS only.
+4) To utilise jhove utility, ensure [java](https://www.java.com/en/download/help/download_options.html) is installed in your system and then perform the required steps available at [jhove](https://jhove.openpreservation.org/getting-started/).
+5) To utilise the brunnhilde/ClamAV utility, perform installation of the [siegfried](https://github.com/richardlehane/siegfried?tab=readme-ov-file) module first and then perform the required procedure explained at [brunnhilde](https://www.dpconline.org/blog/blog-niamh-murphy-brunnhilde-installation). Note that the brunnhilde utility is tried and tested in MacOS only while the siegfried ultility is available for all platforms.
 
 ## Python Scripts:
 
