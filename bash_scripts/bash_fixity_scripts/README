@@ -6,8 +6,7 @@ during transfer and movement. They are adapted from scripts created and develope
 ###Points to note
 1. For use with MacOS only. They are not suitable for Windows or Linux operating systems.
 2. For use with a shell command prompt. To execute, open the Terminal command prompt on your Mac computer.
-3. Logs and Manifests for each script executed are stored in Desktop in a folder called "ucclib_logs" and "ucclib_manifests" with the name of 
-the log file indicating the script executed along with a timestamp of execution and name of the manifest file indicating the folder the script worked on.
+3. Logs and Manifests for each script executed are stored in Desktop in a folder called "ucclib_logs" and "ucclib_manifests" with the name of the log file indicating the script executed along with a timestamp of execution and name of the manifest file indicating the folder the script worked on.
 
 
 ###Installation:
@@ -16,7 +15,9 @@ Open the Terminal command prompt on your Mac computer.
 Change the directory (cd) of the of the Terminal command from the home directory to the newly dowbloaded directory where your scripts are stored using the "cd" command
 
 Example-
+```bash
 cd "/home/user/desktop/cash_fixity_scripts_ucc"
+```
 
 ###Scripts
 
@@ -28,12 +29,12 @@ the script will work on. If sidecar isn't passed the logs and checksum file are 
 
 #Usage:
 Commands to execute this script in Terminal command prompt:
-bash manifest.sh "/home/user/directory1"
-bash manifest.sh "/home/user/directory1" -s
-
+```bash
+bash manifest_creator.sh "/home/user/directory1"
+bash manifest_creator.sh "/home/user/directory1" -s
+```
 Arguments accespeted by this script:
-1. -h : prints usage and arguments for this script
-2. -s : sidecar argument to store logs and checksum beside the directory the script operates on. (Optional)
+1. -s : sidecar argument to store logs and checksum beside the directory the script operates on. (Optional)
 
 Output:
 "_manifest.md5" file

@@ -8,7 +8,7 @@ import shutil
 import hashlib
 import subprocess
 from logger import generate_log, make_desktop_logs_dir, remove_bad_files
-from metadata_extractor import format_details, image_exiftool, av_mediainfo
+from metadata_extractor import format_details, image_exiftool, av_mediainfo, others_exiftool
 
 # Empty class to create custom objects. Useful to modify argument lists.
 class Arguments():
@@ -309,22 +309,41 @@ def main():
 
     args_object = Arguments()
 
+    # format = args.format
+    # ret = format_details(format, "image_format_mapper.csv")
+    # if ret == "":
+    #     ret = format_details(format, "av_format_mapper.csv")
+    #     if ret == "":
+    #         generate_log(log_name_source, "Enter a proper av or image format to package")
+    #         print("Enter a proper image or av format to package")
+    #         sys.exit()
+    #     else:
+    #         args_object.av = format
+    #         args.format_list = ret
+    #         metadata = av_mediainfo
+    # else:
+    #     args_object.img = format
+    #     args.format_list = ret
+    #     metadata = image_exiftool
+
     format = args.format
-    ret = format_details(format, "image_format_mapper.csv")
-    if ret == "":
-        ret = format_details(format, "av_format_mapper.csv")
-        if ret == "":
-            generate_log(log_name_source, "Enter a proper av or image format to package")
-            print("Enter a proper image or av format to package")
-            sys.exit()
-        else:
-            args_object.av = format
-            args.format_list = ret
-            metadata = av_mediainfo
-    else:
+    if format_details(format, "image_format_mapper.csv") != "":
         args_object.img = format
-        args.format_list = ret
+        args.format_list = format_details(format, "image_format_mapper.csv")
         metadata = image_exiftool
+    elif format_details(format, "av_format_mapper.csv") != "":
+        args_object.av = format
+        args.format_list = format_details(format, "av_format_mapper.csv")
+        metadata = av_mediainfo
+    elif format_details(format, "other_format_mapper.csv") != "":
+        args_object.text = format
+        args.format_list = format_details(format, "other_format_mapper.csv")
+        metadata = others_exiftool
+    else:
+        generate_log(log_name_source, "Enter a proper av/image/text format to package")
+        print("Enter a proper image/av/text format to package")
+        sys.exit()
+
 
     args_object.i = input_path
     args_object.dest = output_path

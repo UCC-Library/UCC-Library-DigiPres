@@ -48,6 +48,11 @@ def arg_parse():
                         default="", 
                         help="Enter the audio/video (av) formats you would like to inspect")
     
+    parser.add_argument('-text',
+                        type=str,
+                        default="", 
+                        help="Enter the other formats you would like to inspect")
+    
     parser.add_argument('-jhove',
                         choices=['y', 'n'],
                         type=str,
@@ -257,6 +262,88 @@ def av_mediainfo(args, log_name_source):
     generate_log(log_name_source, " Exiting Mediainfo processing of target audio/video formats")
     return
 
+def others_exiftool(args, log_name_source):
+
+    input_path = args.i
+    txt_formats_list = list(args.text.split(" "))
+
+    print(f"Beginning exiftool processing of target {txt_formats_list} text formats")
+    generate_log(log_name_source, f" Beginning exiftool processing of target {txt_formats_list} text formats")
+
+    for format in txt_formats_list:
+        if hasattr(args, 'dest'):
+            destination_directory = os.path.join(args.dest, "metadata")
+        else:
+            destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
+            
+        os.makedirs(destination_directory, exist_ok=True)
+        format_detailed_list = format_details(format, r"other_format_mapper.csv")
+
+        csv_path = os.path.join(destination_directory, "exif_csv")
+        txt_path = os.path.join(destination_directory, "exif_txt")
+
+        os.makedirs(csv_path, exist_ok=True)
+        os.makedirs(txt_path, exist_ok=True)
+
+        print(f'Beginning processing for {format} format')
+        generate_log(log_name_source,f' Beginning processing for {format} format')
+
+        remove_bad_files(input_path, log_name_source)
+
+        for root, _, files in os.walk(input_path):
+            if files == () or files == []:
+                continue
+            
+            for file in files:
+                if str(os.path.splitext(file)[1]).lower() in format_detailed_list:
+                    
+                    source_file = os.path.join(root, file)
+                    dest_file = os.path.basename(root) + "_" + file 
+                    exif_csv = os.path.join(csv_path, dest_file)
+                    command = f"""\
+                    exiftool -csv "{source_file}" > "{exif_csv}.csv"
+                    """      
+                    subprocess.run(command, shell=True, text=True)
+
+                    exif_txt = os.path.join(txt_path, dest_file)
+                    command = f"""\
+                    exiftool "{source_file}" > "{exif_txt}.txt"
+                    """
+                    subprocess.run(command, shell=True, text=True) 
+        
+        print(f'- csv and txt folders are created successfully for {format} format')
+        generate_log(log_name_source, f'- csv and txt folders are created successfully for {format} format')
+
+        try:
+            merged_csv = pd.DataFrame()
+
+            for file in os.listdir(csv_path):
+                df = pd.read_csv(os.path.join(csv_path, file), header=0)
+                merged_csv = pd.concat([merged_csv, df], ignore_index=True)
+            
+            if hasattr(args, 'dest'):
+                csv_file_name = os.path.basename(args.dest) + "_merged.csv"
+            else:
+                csv_file_name = os.path.basename(input_path) + "_exif_master.csv"
+
+            merged_csv.to_csv(os.path.join(destination_directory, csv_file_name), index=False, encoding='utf-8')
+            print(f'Merged csv files into master_csv for {format}')
+            generate_log(log_name_source, f' Merged csv files into master_csv for {format}')
+
+        except Exception as e:
+            
+            print(f'Could not perform the csv files merge operation - \n {e}')
+            generate_log(log_name_source, f' Could not perform the csv files merge operation - \n {e}')
+            print(f'File causing an error in creating master csv - {file}')
+            generate_log(log_name_source, f' File causing an error in creating master csv - {file}')
+        
+        print(f'Exiting Processing for {format} format')
+        generate_log(log_name_source,f' Exiting Processing for {format} format')
+    
+    print("Exiting exiftool processing of target text formats")
+    generate_log(log_name_source, " Exiting exiftool processing of target text formats")
+    return
+
 # Below function triggers jhove auditing process for all the files stored
 # in the "objects" folder and stores the results in the "metadata" folder.
 def jhove_audit(args, log_name_source):
@@ -320,7 +407,7 @@ def main():
             generate_log(log_name_source, ' - Input must be a directory/folder - exiting!')
             sys.exit()
     
-    if args.img == "" and args.av == "":
+    if args.img == "" and args.av == "" and args.text == "":
             print(' - At least one format must be provided as input')
             generate_log(log_name_source, ' - At least once format must be provided as input')
             sys.exit()    
@@ -351,6 +438,9 @@ def main():
     
     if args.av:
         av_mediainfo(args, log_name_source)
+    
+    if args.text:
+        others_exiftool(args, log_name_source)
 
     if args.jhove == 'y' and args.img:
         img_formats_list = list(args.img.split(" "))

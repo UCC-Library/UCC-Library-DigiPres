@@ -43,3 +43,5 @@ def remove_bad_files(root_dir, log_name_source):
                         os.remove(path)
                     except OSError:
                         print('can\'t delete as source is read-only')
+
+    print("Bad files removed - exiting process")
