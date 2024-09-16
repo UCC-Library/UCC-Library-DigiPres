@@ -22,26 +22,38 @@ cd "/home/user/desktop/cash_fixity_scripts_ucc"
 ###Scripts
 
 ## A) manifest_creator.sh
-#Summary: 
+### Summary: 
 The purpose of this bash script is to generate the md5 checksum manifest file for each and every file for a given directory and store all the checksum results in a single file. 
 An optional parameter "sidecar" could be passed while calling the script of execution with which the log file and manifest file is stored right beside the directory on which 
 the script will work on. If sidecar isn't passed the logs and checksum file are stored in "ucclib_logs" and "ucclib_manifests" folders respectively.
 
-#Usage:
+### Arguments accespeted by this script:
+1. -s : sidecar argument to store logs and checksum beside the directory the script operates on. (Optional)
+
+### Usage:
 Commands to execute this script in Terminal command prompt:
 ```bash
 bash manifest_creator.sh "/home/user/directory1"
 bash manifest_creator.sh "/home/user/directory1" -s
 ```
-Arguments accespeted by this script:
-1. -s : sidecar argument to store logs and checksum beside the directory the script operates on. (Optional)
 
-Output:
+### Output:
 "_manifest.md5" file
 located in the 'ucclib_manifests' folder and (optional) as a sidecar to the input directory.
 
 ## B) copyfixity.sh
-#Summary: 
+### Summary: 
 
+The purpose of this script is to copy files from a source directory to a destination while ensuring data integrity through checksum validation. It calculates fixity checksums for each file in both the source and destination directories, compares them, and logs any discrepancies. If a mismatch is detected, it reports the failed files and advises re-copying them. The script generates detailed logs and checksum manifests for future reference, ensuring that all files are copied correctly and remain intact during the transfer.
+
+        
+### Usage:
+Commands to execute the script in the command window :    
+```bash    
+bash copyfixity.sh "/home/user/<source-directory>" "/home/user/<destination-directory>"
+```
+
+### Output:
+Folder completely copied to destination with fixity manifest file which has checksum details of all the files copied to destination.
 
 
