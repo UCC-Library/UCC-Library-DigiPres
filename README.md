@@ -10,7 +10,7 @@ Command to install these packages -
 ```bash
 pip3 install pandas pymediainfo
 ```
-Note: If "pip3 install <package>" does not work, try "python3 -m pip install <package">.
+Note: If "pip3 install <package>" does not work, try "python3 -m pip install <package>".
 
 4) While working on MacOS, ensure homebrew package manager is installed. Check using the following command in the bash command prompt - 
 ```bash
