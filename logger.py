@@ -7,7 +7,7 @@ from pymediainfo import MediaInfo
 
 # Code from IFIScripts github repository
 def make_desktop_logs_dir():
-    desktop_logs_dir = os.path.expanduser("~/Desktop/ucclibrary_logs")
+    desktop_logs_dir = os.path.expanduser("~/Desktop/ucclib_logs")
     os.makedirs(desktop_logs_dir, exist_ok= True)
     return desktop_logs_dir
 
