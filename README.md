@@ -10,8 +10,22 @@ Command to install these packages -
 ```bash
 pip3 install pandas pymediainfo
 ```
-4) To utilise jhove utility, ensure [java](https://www.java.com/en/download/help/download_options.html) is installed in your system and then perform the required steps available at [jhove](https://jhove.openpreservation.org/getting-started/).
-5) To utilise the brunnhilde/ClamAV utility, perform installation of the [siegfried](https://github.com/richardlehane/siegfried?tab=readme-ov-file) module first and then perform the required procedure explained at [brunnhilde](https://www.dpconline.org/blog/blog-niamh-murphy-brunnhilde-installation). Note that the brunnhilde utility is tried and tested in MacOS only while the siegfried ultility is available for all platforms.
+Note: If "pip3 install <package>" does not work, try "python3 -m pip install <package">.
+
+4) While working on MacOS, ensure homebrew package manager is installed. Check using the following command in the bash command prompt - 
+```bash
+brew help
+```
+If the command is not found, perform the installation using the following command ([details](https://brew.sh)) -
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+5) To utilise jhove utility, ensure [java](https://www.oracle.com/ie/java/technologies/downloads/) is installed in your system. Open bash command prompt to check the java version using the following command. 
+```bash
+java --version
+```
+Then, perform the required steps available at [jhove](https://jhove.openpreservation.org/getting-started/).
+6) To utilise the brunnhilde/ClamAV utility, perform installation of the [siegfried](https://github.com/richardlehane/siegfried?tab=readme-ov-file) module first and then perform the required procedure explained at this [blog](https://www.dpconline.org/blog/blog-niamh-murphy-brunnhilde-installation) by Niamh Murphy. Note that the brunnhilde utility is tried and tested in MacOS only while the siegfried ultility is available for all platforms.
 
 ## Python Scripts:
 

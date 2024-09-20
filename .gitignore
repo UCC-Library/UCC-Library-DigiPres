@@ -1,5 +1,4 @@
 *.pdf
-/"__pycache__"
+/__pycache__
 *.docx
-/pdf*.py
 /*pages.csv

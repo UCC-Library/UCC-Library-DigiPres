@@ -35,8 +35,8 @@ def main():
     input_paths = args.i
     log_name_source_ = "search_duplicates_" + time.strftime("_%Y_%m_%dT%H_%M_%S") + ".log"
     desktop_logs_dir = make_desktop_logs_dir()
-    log_name_source = os.path.join(desktop_logs_dir, log_name_source_)
     join = os.path.join
+    log_name_source = join(desktop_logs_dir, log_name_source_)
 
     
     files_by_size = {}
