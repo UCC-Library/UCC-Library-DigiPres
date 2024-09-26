@@ -59,7 +59,7 @@ def arg_parse():
                         help="Enter a specific destination directory to package all the required metadata and reports into it \
                             instead of placing it as a default sidecar to the input directory")
     
-    parser.add_argument('-other',
+    parser.add_argument('-other_sup',
                         type=str,
                         default="", 
                         help="Enter the additional directory/file to be copied from a different source to the destination")
@@ -486,7 +486,7 @@ def main():
     else:
         output_path = os.path.dirname(input_path)
     
-    other = args.other
+    other = args.other_sup
     if other:
         print("Other folder/directory is entered for copying into the destination")
         generate_log(log_name_source, "Other folder/directory is entered for copying into the destination")
@@ -516,8 +516,6 @@ def main():
     
     if args.brunnhilde == 'y':
         brunnhilde_scan(args, log_name_source)
-    
-        other = args.other
     
     
 # Below code marks the start of execution of the program.

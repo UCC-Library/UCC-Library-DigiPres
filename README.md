@@ -96,7 +96,7 @@ Two subdirectories are created inside the output folder named exiftool_csv and e
             (Optional in command line argument, mandatory user input during execution)
 7) -brunnhilde : Enter y/n to enable the brunnhilde/Clam-AV utility to perform and report file format identification along with virus-checking.
             (Optional in command line argument, mandatory user input during execution)
-8) -other : 
+8) -other_sup : Enter any other folder/file from a different source to be copied into the destination.
     
 Either one of -img, -av and -text has to be entered for the script execute. All three or any two of them could be used together as well. 
 
@@ -145,7 +145,7 @@ The purpose of this script is to create a package wherein a specific format of i
         (Optional in command line argument, mandatory user input during execution)
 8) -brunnhilde : Enter y/n to enable the brunnhilde/Clam-AV utility to perform and report file format identification along with virus-checking.
         (Optional in command line argument, mandatory user input during execution)
-9) -other : 
+9) -other_sup : Enter any other folder/file from a different source to be copied into the destination.
 
 
 #### Example commands to execute the script in the command window

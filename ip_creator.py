@@ -73,7 +73,7 @@ def arg_parse():
                         default='', 
                         help="Enter your choice on using 'brunnhilde-ClamAV' utility IF available")
     
-    parser.add_argument('-other',
+    parser.add_argument('-other_sup',
                         type=str,
                         default='', 
                         help="Enter the additional directory/file to be copied from a different source to the destination")
@@ -374,7 +374,7 @@ def main():
     # Calling appropriate metadata extractor function
     metadata(args_object, log_name_source)
 
-    other = args.other
+    other = args.other_sup
     if other:
         print("Other folder/directory is entered for copying into the destination")
         generate_log(log_name_source, "Other folder/directory is entered for copying into the destination")
