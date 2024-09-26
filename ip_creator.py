@@ -73,6 +73,11 @@ def arg_parse():
                         default='', 
                         help="Enter your choice on using 'brunnhilde-ClamAV' utility IF available")
     
+    parser.add_argument('-other',
+                        type=str,
+                        default='', 
+                        help="Enter the additional directory/file to be copied from a different source to the destination")
+    
     parsed_args = parser.parse_args()
 
     return parsed_args
@@ -369,12 +374,34 @@ def main():
     # Calling appropriate metadata extractor function
     metadata(args_object, log_name_source)
 
+    other = args.other
+    if other:
+        print("Other folder/directory is entered for copying into the destination")
+        generate_log(log_name_source, "Other folder/directory is entered for copying into the destination")
+        if os.path.exists(other):
+            if os.path.isfile(other):
+                print("The other path is a valid file at source. Copying to destination ...")
+                generate_log(log_name_source, "The other path is a valid file at source. Copying to destination ...")
+                shutil.copy2(other, supplement_folder)
+                print("Other file copied to destination successfully")
+                generate_log(log_name_source, "Other file copied to destination successfully")
+            elif os.path.isdir(other):
+                print("The other path is a valid directory. Copying its contents recursively to destination ...")
+                generate_log(log_name_source, "The other path is a valid directory. Copying its contents recursively to destination ...")
+                shutil.copytree(other, os.path.join(supplement_folder, os.path.basename(other)), dirs_exist_ok=True)
+                print("Other directory copied to destination successfully")
+                generate_log(log_name_source, "Other directory copied to destination successfully")
+        else:
+            print("Enter a valid directory or file to copied in the destination")
+            generate_log(log_name_source, "Enter a valid directory or file to copied in the destination - Exiting")
+    
     if args.jhove == 'y' and args.format in ['.tiff', '.jpeg', '.jpeg2000']:
         jhove_audit(args, log_name_source)
     
     if args.brunnhilde == 'y':
         brunnhilde_scan(args, log_name_source)
     
+
     if os.path.exists(supplement_folder):
         if len(os.listdir(supplement_folder)) == 0:
             os.removedirs(supplement_folder)

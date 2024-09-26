@@ -53,6 +53,17 @@ def arg_parse():
                         default="", 
                         help="Enter the other formats you would like to inspect")
     
+    parser.add_argument('-o',
+                        type=str,
+                        default="", 
+                        help="Enter a specific destination directory to package all the required metadata and reports into it \
+                            instead of placing it as a default sidecar to the input directory")
+    
+    parser.add_argument('-other',
+                        type=str,
+                        default="", 
+                        help="Enter the additional directory/file to be copied from a different source to the destination")
+    
     parser.add_argument('-jhove',
                         choices=['y', 'n'],
                         type=str,
@@ -110,7 +121,13 @@ def image_exiftool(args, log_name_source):
         if hasattr(args, 'dest'):
             destination_directory = os.path.join(args.dest, "metadata")
         else:
-            destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
+            output_path = args.o
+            if output_path:
+                os.makedirs(output_path, exist_ok=True)
+                metadata_fold = os.path.basename(input_path) + "_metadata_" + format[1:]
+                destination_directory = os.path.join(output_path, metadata_fold)
+            else:
+                destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
             
         os.makedirs(destination_directory, exist_ok=True)
         format_detailed_list = format_details(format, r"image_format_mapper.csv")
@@ -193,7 +210,13 @@ def av_mediainfo(args, log_name_source):
         if hasattr(args, 'dest'):
             destination_directory = os.path.join(args.dest, "metadata")
         else:
-            destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
+            output_path = args.o
+            if output_path:
+                os.makedirs(output_path, exist_ok=True)
+                metadata_fold = os.path.basename(input_path) + "_metadata_" + format[1:]
+                destination_directory = os.path.join(output_path, metadata_fold)
+            else:
+                destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
         
         os.makedirs(destination_directory, exist_ok=True)
         format_detailed_list = format_details(format, r"av_format_mapper.csv")
@@ -274,7 +297,13 @@ def others_exiftool(args, log_name_source):
         if hasattr(args, 'dest'):
             destination_directory = os.path.join(args.dest, "metadata")
         else:
-            destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
+            output_path = args.o
+            if output_path:
+                os.makedirs(output_path, exist_ok=True)
+                metadata_fold = os.path.basename(input_path) + "_metadata_" + format[1:]
+                destination_directory = os.path.join(output_path, metadata_fold)
+            else:
+                destination_directory = os.path.join(input_path + "_metadata_" + format[1:])
             
         os.makedirs(destination_directory, exist_ok=True)
         format_detailed_list = format_details(format, r"other_format_mapper.csv")
@@ -349,11 +378,16 @@ def others_exiftool(args, log_name_source):
 def jhove_audit(args, log_name_source):
     
     input_path = args.i
+    output_path = args.o
 
     print(' - JHOVE available/enabled - Beginning auditing')
     generate_log(log_name_source, ' - JHOVE available/enabled - Beginning auditing')
 
-    jhove_xml_file = input_path + "_jhove_audit.xml"
+    if args.o:
+        jhove_xml_file = os.path.join(output_path, os.path.basename(input_path) + "_jhove_audit.xml")
+    else:
+        jhove_xml_file = input_path + "_jhove_audit.xml"
+    
     command = f"""\
     {os.path.expanduser("~/")}jhove/jhove -h Audit -o "{jhove_xml_file}" "{input_path}"
     """
@@ -368,12 +402,17 @@ def jhove_audit(args, log_name_source):
 def brunnhilde_scan(args, log_name_source):
 
     input_path = args.i
+    output_path = args.o
     base_folder = os.path.basename(input_path)
 
     print(' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
     generate_log(log_name_source, ' - Brunnhilde-ClamAV scan available/enabled - Beginning scanning')
 
-    brunnhilde_output_folder = input_path + "_brunnhilde"
+    if args.o:
+        brunnhilde_output_folder = os.path.join(output_path, base_folder + "_brunnhilde")
+    else:
+        brunnhilde_output_folder = input_path + "_brunnhilde"
+    
     command = f"""\
     brunnhilde.py "{input_path}" "{brunnhilde_output_folder}"
     """
@@ -432,7 +471,7 @@ def main():
         else:
             args.brunnhilde = 'n'
             generate_log(log_name_source, "Ignoring jhove auditing")
-
+    
     if args.img:
         image_exiftool(args, log_name_source)
     
@@ -442,6 +481,32 @@ def main():
     if args.text:
         others_exiftool(args, log_name_source)
 
+    if args.o:
+        output_path = args.o
+    else:
+        output_path = os.path.dirname(input_path)
+    
+    other = args.other
+    if other:
+        print("Other folder/directory is entered for copying into the destination")
+        generate_log(log_name_source, "Other folder/directory is entered for copying into the destination")
+        if os.path.exists(other):
+            if os.path.isfile(other):
+                print("The other path is a valid file at source. Copying to destination ...")
+                generate_log(log_name_source, "The other path is a valid file at source. Copying to destination ...")
+                shutil.copy2(other, output_path)
+                print("Other file copied to destination successfully")
+                generate_log(log_name_source, "Other file copied to destination successfully")
+            elif os.path.isdir(other):
+                print("The other path is a valid directory. Copying its contents recursively to destination ...")
+                generate_log(log_name_source, "The other path is a valid directory. Copying its contents recursively to destination ...")
+                shutil.copytree(other, os.path.join(output_path, os.path.basename(other)), dirs_exist_ok=True)
+                print("Other directory copied to destination successfully")
+                generate_log(log_name_source, "Other directory copied to destination successfully")
+        else:
+            print("Enter a valid directory or file to copied in the destination")
+            generate_log(log_name_source, "Enter a valid directory or file to copied in the destination - Exiting")
+    
     if args.jhove == 'y' and args.img:
         img_formats_list = list(args.img.split(" "))
         for f in img_formats_list:
@@ -451,6 +516,9 @@ def main():
     
     if args.brunnhilde == 'y':
         brunnhilde_scan(args, log_name_source)
+    
+        other = args.other
+    
     
 # Below code marks the start of execution of the program.
 if __name__ == "__main__":

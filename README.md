@@ -25,6 +25,7 @@ If the command is not found, perform the installation using the following comman
 java --version
 ```
 Then, perform the required steps available at [jhove](https://jhove.openpreservation.org/getting-started/).
+
 6) To utilise the brunnhilde/ClamAV utility, perform installation of the [siegfried](https://github.com/richardlehane/siegfried?tab=readme-ov-file) module first and then perform the required procedure explained at this [blog](https://www.dpconline.org/blog/blog-niamh-murphy-brunnhilde-installation) by Niamh Murphy. Note that the brunnhilde utility is tried and tested in MacOS only while the siegfried ultility is available for all platforms.
 
 ## Python Scripts:
@@ -87,12 +88,15 @@ Two subdirectories are created inside the output folder named exiftool_csv and e
 1) -i : Input (Absolute) path of the directory to inspect. 
                     (Required Parameter)
 2) -img :  Enter the image format/formats to inspect.
-3) -av : Enter the av format/formats to inspect.
-4) -text : Enter the "other" format/formats to inspect.
-5) -jhove : Enter y/n to enable the jhove audit utility to validate and summarize the formats present in the source folder.
+3) -o : Enter the output directory to place all the required processing outputs. If no value is entered all output files/folders are placed as a sidecar to the input directory.
+                (Optional parameter)
+4) -av : Enter the av format/formats to inspect.
+5) -text : Enter the "other" format/formats to inspect.
+6) -jhove : Enter y/n to enable the jhove audit utility to validate and summarize the formats present in the source folder.
             (Optional in command line argument, mandatory user input during execution)
-6) -brunnhilde : Enter y/n to enable the brunnhilde/Clam-AV utility to perform and report file format identification along with virus-checking.
+7) -brunnhilde : Enter y/n to enable the brunnhilde/Clam-AV utility to perform and report file format identification along with virus-checking.
             (Optional in command line argument, mandatory user input during execution)
+8) -other : 
     
 Either one of -img, -av and -text has to be entered for the script execute. All three or any two of them could be used together as well. 
 
@@ -141,6 +145,7 @@ The purpose of this script is to create a package wherein a specific format of i
         (Optional in command line argument, mandatory user input during execution)
 8) -brunnhilde : Enter y/n to enable the brunnhilde/Clam-AV utility to perform and report file format identification along with virus-checking.
         (Optional in command line argument, mandatory user input during execution)
+9) -other : 
 
 
 #### Example commands to execute the script in the command window
@@ -150,8 +155,82 @@ python3 ip_creator.py -i "/home/user/directory1" -o "/home/user/directory4" -uid
 python3 ip_creator.py -i "/home/user/directory1" -o "/home/user/directory4" -uid "dooa1212" -format ".tif" -brunnhilde y -jhove y -supplement .docx
 python3 ip_creator.py -i "/home/user/directory1" -o "/home/user/directory4" -uid "dooa1212" -format ".jpg" -supplement ".xlsx .pdf"
 ```
+
+### 4) search_duplicates.py -
     
-### 4) logger.py -
+#### Summary 
+    
+The purpose of this script is to search and return a list of duplicates across directories and return the list of the duplicate file paths for each file if it contains a duplicate. 
+
+#### Output 
+
+"/home/user/directory1/file1" : ["/home/user/directory2/file1A", "home/user/directory3/file1"]
+"/home/user/directory2/file7" : ["/home/user/directory2/f2/file7", "home/user/directory3/f4/f5/file678"]
+
+#### Arguments accepted by this script
+
+1) -i : Input (Absolute) path(s) of the directory/directories to inspect. 
+        (Required Parameter)
+
+#### Example commands to execute the script in the command window
+
+```bash
+python3 search_duplicates.py -i "/home/user/directory1" 
+python3 search_duplicates.py -i "/home/user/directory1 /home/user/directory2 /home/user/directory3"
+```
+
+### 5) remove.py -
+    
+#### Summary 
+    
+The purpose of this script is to remove specific files formats of interest from a given input directory. The script automatically searches recursively in the given directory and removes the required files. Also, there is an option to remove empty directories if required. 
+        
+#### Note
+    
+Always run folder_summary.py first to understand the formats present in the input directory of interest and refer to the "format" column (image/av)_format_mapper.csv files and use the exact values in the arguments for this script.
+        
+#### Arguments accepted by this script
+
+1) -i : Input (Absolute) path of the directory to inspect. 
+        (Required Parameter)
+2) -formats : Enter the file formats to be removed from the given directory.
+        (Optional Parameter)
+3) -ref : Enter if you would like to remove empty directories. Enter y/n (yes/no)
+        (Optional Parameter)
+Either one of -formats or -ref is mandatory.
+
+#### Example commands to execute the script in the command window
+
+```bash
+python3 remove.py -i "/home/user/directory1" -formats ".xlsx" 
+python3 remove.py -i "/home/user/directory1" -ref y
+python3 remove.py -i "/home/user/directory1" -formats ".jpg" -ref n
+```
+
+### 6) pdf2csv.py -
+    
+#### Summary 
+    
+The purpose of this script is to extract the description for a specific set of pdfs provided by the ucc library and place them in a csv file for further processing. This script is not intended for general use.
+
+#### Arguments accepted by this script
+
+1) -i : Input (Absolute) path(s) of the directory/directories to inspect. 
+        (Required Parameter)
+2) -start : Page number of the pdf from which the extraction starts.
+        (Required Parameter)
+3) -end : Page number of the pdf at the which the extraction ends.
+        (Required Parameter)
+4) -o : Full path of output directory to place the spreadsheet.
+        (Required Parameter)
+
+#### Example commands to execute the script in the command window
+
+```bash
+python3 pdf2csv.py -i "/home/user/directory1/abc.pdf" -start 12 -end 35 -o "home/user/directory3"
+```
+
+### 7) logger.py -
     
 Summary :
     
