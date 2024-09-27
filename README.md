@@ -234,7 +234,7 @@ python3 pdf2csv.py -i "/home/user/directory1/abc.pdf" -start 12 -end 35 -o "home
 
 ### 7) logger.py -
     
-Summary :
+#### Summary
     
 This script contains functions necessary to log all the above script runs.
 
