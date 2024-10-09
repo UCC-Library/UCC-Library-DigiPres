@@ -395,7 +395,7 @@ def main():
             print("Enter a valid directory or file to copied in the destination")
             generate_log(log_name_source, "Enter a valid directory or file to copied in the destination - Exiting")
     
-    if args.jhove == 'y' and args.format in ['.tiff', '.jpeg', '.jpeg2000']:
+    if args.jhove == 'y' and args.format in ['.tiff', '.jpeg', '.jpeg2000', '.pdf']:
         jhove_audit(args, log_name_source)
     
     if args.brunnhilde == 'y':
